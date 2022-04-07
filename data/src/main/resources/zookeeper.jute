@@ -1,0 +1,12 @@
+module com.example.data {
+
+    class PicInfo {
+            int ID;
+            long GoodID;
+            ustring Url;
+            ustring Guid;
+            ustring Type;
+            int Order;
+        }
+
+}
