@@ -58,7 +58,7 @@ public class OpenApiStart {
                 }
                 SingleConfig singleConfig = new SingleConfig();
                 singleConfig.setAppId(appid);
-                singleConfig.setCluster("loan-3052-tjbh");
+                singleConfig.setCluster("loan3-0");
                 singleConfig.setEnv("DEV");
                 singleConfig.setKey(openItemDTO.getKey());
                 singleConfig.setNamespace(openNamespaceDTO.getNamespaceName());

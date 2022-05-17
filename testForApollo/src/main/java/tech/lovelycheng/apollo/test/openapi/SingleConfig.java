@@ -87,4 +87,7 @@ public class SingleConfig {
     public String toString() {
         return "| "+appId+" | "+namespace+" | "+key+" | "+value+" | "+remark+" | "+"新增"+" | "+maintainer+" |"+"\n";
     }
+
+
+
 }
