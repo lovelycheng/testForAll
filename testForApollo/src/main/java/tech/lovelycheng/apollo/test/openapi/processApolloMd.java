@@ -29,13 +29,14 @@ public class processApolloMd {
     static Integer OPERATE_IDX = TYPE_IDX + 1;
 
     final static String ADD_APPLICATION_KEY = "_application_add";
-    final static String ADD_NS000_KEY = "_application_add";
+    final static String ADD_NS000_KEY = "_000_add";
     final static String ADD_CREP_KEY = "_CREP_SYSTEM_V3_add";
 
     final static String DEL_APPLICATION_KEY = "_application_del";
-    final static String DEL_NS000_KEY = "_application_del";
+    final static String DEL_NS000_KEY = "_000_del";
     final static String DEL_CREP_KEY = "_CREP_SYSTEM_V3_del";
 
+    //static String filePath = "/Users/chengtong/mid-document/release_resources/release";
     static String filePath = "/Users/chengtong/mid-document/release_resources/release";
     static String fileDestPath = "/Users/chengtong/demo/testForApollo/src/main/resources/properties/";
 
@@ -44,11 +45,11 @@ public class processApolloMd {
     public static void main(String[] args) throws Exception {
         File file = new File(filePath);
         File dest = new File(fileDestPath);
-        if(dest.list().length > 0){
-            for (File file1:dest.listFiles()){
-                file.delete();
-            }
-        }
+        // if(dest.list().length > 0){
+        //     for (File file1:dest.listFiles()){
+        //         file.delete();
+        //     }
+        // }
         File[] releaseVersions = file.listFiles();
         for (File releaseVersion : releaseVersions) {
             String version = releaseVersion.getName()

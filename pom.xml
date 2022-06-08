@@ -22,6 +22,7 @@
         <module>testForApollo</module>
         <module>testForPlaywight4j</module>
         <module>testForNetty</module>
+        <module>testForSql</module>
     </modules>
 
     <dependencies>
