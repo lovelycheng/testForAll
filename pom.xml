@@ -23,6 +23,7 @@
         <module>testForPlaywight4j</module>
         <module>testForNetty</module>
         <module>testForSql</module>
+        <module>testForFileImport</module>
     </modules>
 
     <dependencies>
