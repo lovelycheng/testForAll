@@ -23,12 +23,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import cn.hutool.core.io.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import tech.lovelycheng.demo.test.fileimport.easyimport.fo.Archived;
-import tech.lovelycheng.demo.test.fileimport.easyimport.fo.XmLoan;
-import tech.lovelycheng.demo.test.fileimport.easyimport.fo.XmLoanRate;
-import tech.lovelycheng.demo.test.fileimport.easyimport.fo.XmOpen;
-import tech.lovelycheng.demo.test.fileimport.easyimport.fo.XmRepay;
-import tech.lovelycheng.demo.test.fileimport.easyimport.fo.XmRepayItem;
-import tech.lovelycheng.demo.test.fileimport.easyimport.fo.XmTermStatus;
 
 /**
  * @author chengtong
