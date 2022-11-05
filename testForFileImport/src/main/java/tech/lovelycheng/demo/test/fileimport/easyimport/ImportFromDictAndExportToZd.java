@@ -35,7 +35,7 @@ import tech.lovelycheng.demo.test.fileimport.easyimport.fo.Archived;
 @Slf4j
 public class ImportFromDictAndExportToZd {
 
-    final static String PATH = "/Users/chengtong/demo/testForFileImport/src/main/resources/mockdata/split/xmzd/";
+    final static String PATH = "/Users/chengtong/demo/testForFileImport/src/main/resources/mockdata/artifact/";
 
     private static Map<String, Map<String, Method>> classToMethod = new HashMap<>();
 
@@ -79,27 +79,30 @@ public class ImportFromDictAndExportToZd {
         }
         List<String> stringList = FileUtil.readUtf8Lines(dataFile);
         List<String> toWrites = new ArrayList<>();
-        if(stringList.isEmpty()){
+        if (stringList.isEmpty()) {
             return;
         }
-        String[] header = stringList.get(0).split(",");
+        String[] header = stringList.get(0)
+            .split(",");
         toWrites.add(String.join(",", header));
         for (int i = 1; i < stringList.size(); i++) {
             String[] data = stringList.get(i)
                 .split(",");
             for (int j = 0; j < header.length; j++) {
                 log.info("header:{}", header[j]);
-                if (header[j].equals("loan_id") && !data[j].startsWith("zd")) {
-                    data[j] = "zd" + data[j];
+                if (header[j].equals("loan_id") && !data[j].startsWith("at")) {
+                    data[j] = "at" + data[j];
                 }
                 if (header[j].equals("seq_no")) {
-                    data[j] = "zd" + data[j];
+                    data[j] = "at" + data[j];
+                }
+                if (header[j].equals("cert_no")) {
+                    header[j] = "330122199106202817";
                 }
             }
             toWrites.add(String.join(",", data));
         }
         toWrites.add("");
-        FileUtil.writeLines(toWrites,dataFile, StandardCharsets.UTF_8);
+        FileUtil.writeLines(toWrites, dataFile, StandardCharsets.UTF_8);
     }
-
 }

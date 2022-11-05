@@ -23,7 +23,8 @@ public class WashData {
 
     public static String XMLD_FILE
         = "/Users/chengtong/demo/testForFileImport/src/main/resources/mockdata/creditData/xmxd_cust_cred_20220710.txt";
-
+    public static String XMLD_OPEN_FILE
+        = "/Users/chengtong/demo/testForFileImport/src/main/resources/mockdata/creditData/xmxd_open_20220710.txt";
 
     public static String XMZD_FILE
         = "/Users/chengtong/demo/testForFileImport/src/main/resources/mockdata/creditData/xmxdzd_cust_cred_20220710.txt";
@@ -44,13 +45,14 @@ public class WashData {
     static GenericGenerator addressGen = ChineseAddressGenerator.getInstance();
 
     public static void main(String[] args) {
-        washCreditFile(XMZD_FILE, "xmxdzd_cust_cred_20201101.txt");
+        // washCreditFile(XMZD_FILE, "xmxdzd_cust_cred_20201101.txt");
         washCreditFile(XMLD_FILE, "xmxd_cust_cred_20201101.txt");
-        washOpen();
+        // washOpen(XMZD_OPEN_FILE,"xmxdzd_open_20220710.txt");
+        washOpen(XMLD_OPEN_FILE,"xmxd_open_20220710.txt");
     }
 
-    private static void washOpen() {
-        List<String> openLists = FileUtil.readLines(XMZD_OPEN_FILE, StandardCharsets.UTF_8);
+    private static void washOpen(String openFile,String destFileName) {
+        List<String> openLists = FileUtil.readLines(openFile, StandardCharsets.UTF_8);
         List<String> washed = Lists.newArrayList();
         List<String> nameUsed = new ArrayList<>();
         List<String> idUsed = new ArrayList<>();
@@ -81,7 +83,7 @@ public class WashData {
             columns[10] = String.valueOf(cardNo);
             washed.add(String.join("\u0001", columns));
         }
-        FileUtil.writeLines(washed, dest + "xmxdzd_open_20220710.txt", StandardCharsets.UTF_8);
+        FileUtil.writeLines(washed, dest + destFileName, StandardCharsets.UTF_8);
     }
 
     private static void washCreditFile(String xmzdFile, String x) {
@@ -121,4 +123,7 @@ public class WashData {
         }
         FileUtil.writeLines(washed, dest + x, StandardCharsets.UTF_8);
     }
+
+
+
 }
