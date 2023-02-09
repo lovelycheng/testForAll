@@ -6,13 +6,9 @@ package tech.lovelycheng.apollo.test.openapi;
  */
 public class MergeTwoApollo {
 
-    
-
-
-
     public static void main(String[] args) {
-
-
-
+        System.err.println(3/2);
+        System.err.println(4/2);
     }
+
 }

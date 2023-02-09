@@ -24,6 +24,7 @@
         <module>testForNetty</module>
         <module>testForSql</module>
         <module>testForFileImport</module>
+        <module>testForSftp</module>
     </modules>
 
     <dependencies>
