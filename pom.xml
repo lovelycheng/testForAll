@@ -25,6 +25,7 @@
         <module>testForSql</module>
         <module>testForFileImport</module>
         <module>testForSftp</module>
+        <module>testForJavaLang</module>
     </modules>
 
     <dependencies>
