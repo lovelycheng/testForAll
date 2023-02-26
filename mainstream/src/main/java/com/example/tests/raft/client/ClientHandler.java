@@ -30,7 +30,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Packet> {
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Packet packet) throws Exception {
         System.err.println(packet.toString());
-        channelHandlerContext.writeAndFlush(packet);
+        // channelHandlerContext.writeAndFlush(packet);
         // OperationFuture future = futureConcurrentHashMap.get(packet.getBody().get);
         // future.setSuccess(packet);
 

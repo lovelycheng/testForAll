@@ -25,6 +25,9 @@ public class ServerHandler extends SimpleChannelInboundHandler<Packet> {
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Packet o) throws Exception {
         System.err.println("read");
         System.err.println(o);
+
+        Packet response = new Packet(99,2,new Operation(1,"auth","pass"));
+        channelHandlerContext.writeAndFlush(response);
     }
 
 

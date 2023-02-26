@@ -13,6 +13,15 @@ public class Operation {
     private String key;
     private String value;
 
+    public Operation() {
+    }
+
+    public Operation(int type, String key, String value) {
+        this.type = type;
+        this.key = key;
+        this.value = value;
+    }
+
     @Override
     public String toString() {
         return "Operation{" + "type=" + type + ", key='" + key + '\'' + ", value='" + value + '\'' + '}';
