@@ -1,4 +1,4 @@
-package com.example.tests.raft.server.codec;
+package com.example.tests.raft.server.leader.codec;
 
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 

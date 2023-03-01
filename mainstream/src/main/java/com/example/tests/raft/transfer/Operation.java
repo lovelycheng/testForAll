@@ -9,14 +9,14 @@ import lombok.Data;
 @Data
 public class Operation {
 
-    private int type;
+    private OpCode type;
     private String key;
     private String value;
 
     public Operation() {
     }
 
-    public Operation(int type, String key, String value) {
+    public Operation(OpCode type, String key, String value) {
         this.type = type;
         this.key = key;
         this.value = value;

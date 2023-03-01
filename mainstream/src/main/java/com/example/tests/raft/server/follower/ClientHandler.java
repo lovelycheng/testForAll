@@ -1,4 +1,4 @@
-package com.example.tests.raft.client;
+package com.example.tests.raft.server.follower;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -7,7 +7,6 @@ import com.example.tests.raft.protocol.KryoProtocol;
 import com.example.tests.raft.protocol.Protocol;
 import com.example.tests.raft.transfer.Packet;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 

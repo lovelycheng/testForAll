@@ -2,16 +2,13 @@ package com.example.tests.raft.server;
 
 import com.example.tests.raft.protocol.KryoProtocol;
 import com.example.tests.raft.protocol.Protocol;
+import com.example.tests.raft.transfer.OpCode;
 import com.example.tests.raft.transfer.Operation;
 import com.example.tests.raft.transfer.Packet;
+import com.example.tests.raft.transfer.TypeCode;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.util.CharsetUtil;
-import io.netty.util.ReferenceCountUtil;
 
 /**
  * @author chengtong
@@ -26,7 +23,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Packet> {
         System.err.println("read");
         System.err.println(o);
 
-        Packet response = new Packet(99,2,new Operation(1,"auth","pass"));
+        Packet response = new Packet(99, TypeCode.REPLICATE,new Operation(OpCode.ADD,"auth","pass"),1L);
         channelHandlerContext.writeAndFlush(response);
     }
 

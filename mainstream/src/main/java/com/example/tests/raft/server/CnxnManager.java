@@ -3,17 +3,12 @@ package com.example.tests.raft.server;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
-import com.example.tests.raft.protocol.Serializer;
-import com.example.tests.raft.transfer.Packet;
-
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPromise;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
-import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 import io.netty.util.ReferenceCountUtil;
 import io.netty.util.concurrent.DefaultEventExecutor;
@@ -22,6 +17,7 @@ import lombok.extern.java.Log;
 /**
  * @author chengtong
  * @date 2023/2/27 00:05
+ * 管理所有的channel，在这层封装channel的读写接口；
  */
 @Log
 public class CnxnManager {
@@ -30,6 +26,8 @@ public class CnxnManager {
      */
     private final ChannelGroup allChannels = new DefaultChannelGroup("serverCnxns", new DefaultEventExecutor());
 
+    private final AttributeKey<ServerCnxn> channelKey = AttributeKey.valueOf("ChannelKey");
+
     /**
      * 需要一个处理器，处理读取和写入、在channel active时加入 allChannels；inactive 移除；
      * 使用默认的双工通信的处理器
@@ -37,6 +35,12 @@ public class CnxnManager {
     @ChannelHandler.Sharable
     class Handler extends ChannelDuplexHandler {
 
+        /**
+         * 我希望通过cnxnmanager管理所有的channel，所以在channel就绪的时候注册这个channel；
+         * 在这个处理器做出站操作时，能够直接获取channel
+         * @param ctx
+         * @throws Exception
+         */
         @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
             log.info("channel active");
@@ -47,8 +51,7 @@ public class CnxnManager {
             allChannels.add(channel);
             ServerCnxn cnxn =new ServerCnxn();
             //channel CNXN 的绑定关系
-            channel.attr(AttributeKey.valueOf("ChannelKey")).set(cnxn);
-
+            channel.attr(channelKey).set(cnxn);
         }
 
         @Override
@@ -63,6 +66,7 @@ public class CnxnManager {
             try {
                 System.err.println("read");
                 System.err.println(msg);
+
                 ctx.fireChannelRead(msg);
             } finally {
                 ReferenceCountUtil.release(msg);
@@ -72,6 +76,7 @@ public class CnxnManager {
         @Override
         public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
             super.channelReadComplete(ctx);
+            ctx.fireChannelReadComplete();
         }
     }
 

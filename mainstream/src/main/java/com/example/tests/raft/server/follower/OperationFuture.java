@@ -1,4 +1,4 @@
-package com.example.tests.raft.client;
+package com.example.tests.raft.server.follower;
 
 import com.example.tests.raft.transfer.Packet;
 

@@ -1,9 +1,9 @@
 package com.example.tests.raft.server;
 
-import com.example.tests.raft.client.codec.OrderFrameDecoder;
-import com.example.tests.raft.client.codec.OrderFrameEncoder;
-import com.example.tests.raft.client.codec.OrderProtocolDecoder;
-import com.example.tests.raft.client.codec.OrderProtocolEncoder;
+import com.example.tests.raft.server.follower.codec.OrderFrameDecoder;
+import com.example.tests.raft.server.follower.codec.OrderFrameEncoder;
+import com.example.tests.raft.server.follower.codec.OrderProtocolDecoder;
+import com.example.tests.raft.server.follower.codec.OrderProtocolEncoder;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -21,6 +21,12 @@ import io.netty.handler.logging.LoggingHandler;
  * @date 2023/2/25 19:36
  */
 public class RaftServer {
+
+    private CnxnManager cnxnManager = new CnxnManager();
+
+
+
+
     public static void main(String[] args) {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();

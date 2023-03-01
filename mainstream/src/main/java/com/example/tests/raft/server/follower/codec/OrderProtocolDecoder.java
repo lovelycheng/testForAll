@@ -1,4 +1,4 @@
-package com.example.tests.raft.client.codec;
+package com.example.tests.raft.server.follower.codec;
 
 import java.util.List;
 
