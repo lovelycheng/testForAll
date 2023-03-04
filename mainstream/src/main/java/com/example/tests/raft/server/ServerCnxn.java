@@ -87,7 +87,7 @@ public class ServerCnxn {
                 });//给workerGroup的EventLoop对应的管道设置处理器
             //绑定端口号，启动服务端
 
-            ChannelFuture channelFuture = bootstrap.bind(config.getLocal().getPort())
+            ChannelFuture channelFuture = bootstrap.bind(config.getLocalAddr().getPort())
                 .sync();
             //对关闭通道进行监听
             channelFuture.channel()

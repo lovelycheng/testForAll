@@ -32,7 +32,7 @@ public class People {
 
     // @Override
     // public int hashCode() {
-    //     return Objects.hash(id, name, mobile);
+    //     return Objects.hash(index, name, mobile);
     // }
 
     public static void main(String[] args) {
@@ -74,7 +74,7 @@ public class People {
         //     if (!(o instanceof People))
         //         return false;
         //     People people = (People) o;
-        //     return Objects.equals(id, people.id) && Objects.equals(name, people.name) && Objects.equals(mobile,
+        //     return Objects.equals(index, people.index) && Objects.equals(name, people.name) && Objects.equals(mobile,
         //         people.mobile);
         // }
 

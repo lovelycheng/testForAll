@@ -90,15 +90,16 @@ public class Election extends Thread{
                     if (body == null) {
                         continue;
                     }
-                    Integer requestId = serverCnxn.getNextRequestId();
+                    Integer requestId = 100990;
                     Packet packet = new Packet(body,requestId );
                     packet.setBody(body);
-                    serverCnxn.getChannel()
+
+                   /* serverCnxn.getChannel()
                         .writeAndFlush(packet)
                         .addListener(future -> {
                             log.info("sid:{},选举信息发送成功", sid);
                             self.addPendingRequest(requestId,packet);
-                        });
+                        });*/
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
