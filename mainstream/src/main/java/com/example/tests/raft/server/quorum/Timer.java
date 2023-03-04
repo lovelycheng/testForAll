@@ -1,18 +1,14 @@
 package com.example.tests.raft.server.quorum;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.example.tests.raft.server.quorum.listener.TimerListener;
 
-import lombok.extern.java.Log;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -25,7 +21,7 @@ public class Timer {
     private String name;
     private AtomicLong currentTime;
     private long time;
-    private Random random = new Random(2000);
+    private final Random random = new Random(2000);
     List<TimerListener> listeners = new ArrayList<>();
     ScheduledThreadPoolExecutor s = new ScheduledThreadPoolExecutor(1);
 
@@ -39,7 +35,7 @@ public class Timer {
      * @param listener trigger
      * @return
      */
-    public static Timer electionTimer(String name, long time, TimeUnit unit, TimerListener listener) {
+    public static Timer simpleTimer(String name, long time, TimeUnit unit, TimerListener listener) {
         Timer timer = new Timer();
         timer.name = name;
         timer.currentTime = new AtomicLong(0);
@@ -81,7 +77,7 @@ public class Timer {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        Timer timer =  Timer.electionTimer("选举计时器", 5, TimeUnit.SECONDS, () -> log.info("TimerListener fired"));
+        Timer timer =  Timer.simpleTimer("选举计时器", 5, TimeUnit.SECONDS, () -> log.info("TimerListener fired"));
         timer.start();
         Thread.sleep(4000);
         timer.refresh();

@@ -16,8 +16,6 @@ import io.netty.channel.SimpleChannelInboundHandler;
  */
 public class ServerHandler extends SimpleChannelInboundHandler<Packet> {
 
-    private final Protocol protocol = new KryoProtocol();
-
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Packet o) throws Exception {
         System.err.println("read");

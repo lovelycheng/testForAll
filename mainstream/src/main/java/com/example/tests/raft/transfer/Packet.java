@@ -16,9 +16,11 @@ import lombok.Data;
  * 8-12: 序列化类型type
  * 12-16: data长度
  * 16: body
- *          |  magicNum  | version   |序列化类型type|  data长度|
- *          +-------------------------------------------------+
- *          |  0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f |
+ * |  magicNum(4)  | version   |序列化类型type| data长度|
+ * +-------------------------------------------------+
+ * |  0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f |
+ * +-------------------------------------------------+
+ * |         requestId         |
  * +--------+-------------------------------------------------+----------------+
  * |00000000| ba be ca fe 11 11 00 01 aa aa bb bb 00 00 10 00 |................|
  */
@@ -32,7 +34,7 @@ public class Packet implements Serializable {
     private Serializer serializer = new Serializer();
 
     @Data
-    private static class Header {
+    public static class Header {
         private int magicNum = MAGIC_NUM;//8 bit max 32
         private int version = VERSION;
         private int serialType = SERIAL_TYPE;
@@ -79,13 +81,19 @@ public class Packet implements Serializable {
         this.body = new Body();
     }
 
-    public Packet(Integer id, TypeCode type, Object data,long requestId) {
+    public Packet(Integer id, TypeCode type, Object data, long requestId) {
         this.header = new Header();
         this.header.requestId = requestId;
         this.body = new Body();
         this.body.index = id;
         this.body.type = type;
         this.body.data = data;
+    }
+
+    public Packet(Packet.Body body, long requestId) {
+        this.header = new Header();
+        this.header.requestId = requestId;
+        this.body = body;
     }
 
     @Override

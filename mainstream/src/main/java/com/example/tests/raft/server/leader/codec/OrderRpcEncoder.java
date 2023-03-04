@@ -14,6 +14,7 @@ import lombok.extern.java.Log;
  */
 @Log
 public class OrderRpcEncoder extends MessageToMessageDecoder<Packet.Body> {
+
     @Override
     protected void decode(ChannelHandlerContext ctx, Packet.Body body, List<Object> out) throws Exception {
         Packet packet = new Packet();

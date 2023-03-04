@@ -13,29 +13,52 @@ import lombok.Data;
  */
 @Data
 public class Config {
+    private int sid;
+    private InetSocketAddress localAddr;
+    private List<Config> others = new ArrayList<>();
 
-    private InetSocketAddress config1 = InetSocketAddress.createUnresolved("127.0.0.1",6970);
-    private InetSocketAddress config2 = InetSocketAddress.createUnresolved("127.0.0.1",6971);
-    private InetSocketAddress config3 = InetSocketAddress.createUnresolved("127.0.0.1",6972);
-    private InetSocketAddress local;
-    private List<InetSocketAddress> others = new ArrayList<>();
-    public Config(int index) throws Exception {
+    private static Config config1 = new Config(1);
+    private static Config config2 = new Config(2);
+    private static Config config3 = new Config(3);
+
+    private static InetSocketAddress address1 = InetSocketAddress.createUnresolved("127.0.0.1",6970);
+    private static InetSocketAddress address2 = InetSocketAddress.createUnresolved("127.0.0.1",6971);
+    private static InetSocketAddress address3 = InetSocketAddress.createUnresolved("127.0.0.1",6972);
+
+
+    private Config(int index){
         if(index == 1){
-            this.local = config1;
+            this.sid =1;
+            this.localAddr = address1;
             others.add(config2);
             others.add(config3);
         }else if(index == 2){
-            this.local = config2;
+            this.sid =2;
+            this.localAddr = address2;
             others.add(config1);
             others.add(config3);
-        }else if(index == 3){
-            this.local = config3;
+        }else{
+            this.sid =3;
+            this.localAddr = address3;
             others.add(config2);
             others.add(config1);
-        }else {
-            throw new Exception();
         }
     }
+
+    public static Config getConfig(int index) throws Exception {
+        switch (index){
+            case 1:
+                return config1;
+            case 2:
+                return config2;
+            case 3:
+                return config3;
+            default:
+                return null;
+        }
+
+    }
+
 
 
 }

@@ -4,7 +4,7 @@ import com.example.tests.raft.server.common.Processor;
 import com.example.tests.raft.server.quorum.QuorumPeer;
 import com.example.tests.raft.transfer.Packet;
 import com.example.tests.raft.transfer.TypeCode;
-import com.example.tests.raft.transfer.Votes;
+import com.example.tests.raft.transfer.VoteFor;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,14 +30,14 @@ public class VoteProcessor implements Processor {
             .equals(TypeCode.VOTES)) {
             next.process(body);
         } else {
-            Votes votes = (Votes) body.getData();
-            if(quorumPeer.supportElect(votes)){
-                int term = votes.getTerm();
+            VoteFor voteFor = (VoteFor) body.getData();
+            if(quorumPeer.supportElect(voteFor)){
+                int term = voteFor.getTerm();
                 if (term < this.quorumPeer.getTerm()){
                     log.info("对方任期小于自己，不接受选举信息");
                     //todo 返回false
                 }
-                int nextIndex = votes.getLastLogIndex();
+                int nextIndex = voteFor.getLastLogIndex();
                 if(nextIndex < this.quorumPeer.getNextIndex().get()) {
                     //todo 返回false
                 }

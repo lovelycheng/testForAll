@@ -7,13 +7,13 @@ import lombok.Data;
  * @date 2023/2/25 15:48
  */
 @Data
-public class Votes {
+public class VoteFor {
     /**
      *
      */
     private int pid;
     /**
-     *
+     * 支持的leadePid
      */
     private int leaderPid;
     /**

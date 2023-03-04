@@ -4,61 +4,55 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
+import com.example.tests.raft.config.Config;
 import com.example.tests.raft.server.ServerCnxn;
-import com.example.tests.raft.server.common.Processor;
 import com.example.tests.raft.server.common.StateEnum;
 import com.example.tests.raft.transfer.Packet;
-import com.example.tests.raft.transfer.Votes;
+import com.example.tests.raft.transfer.VoteFor;
 
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
+import static com.example.tests.raft.server.common.StateEnum.*;
 
 /**
  * @author chengtong
  * @date 2023/2/28 21:57
  */
 @Slf4j
-@Data
-public class QuorumPeer extends PeerThread{
+public class QuorumPeer extends PeerThread {
     /**
      * 是否存活的标志
      */
-    private AtomicBoolean isAlive;
-    /**
-     * 是否支持当前leader
-     */
-    private AtomicBoolean supportive = new AtomicBoolean(false);
+    protected AtomicBoolean isAlive;
 
-    private static final AtomicReferenceFieldUpdater<QuorumPeer,StateEnum> fieldUpdater = AtomicReferenceFieldUpdater.newUpdater(QuorumPeer.class,StateEnum.class,"stateEnum");
+    protected static final AtomicReferenceFieldUpdater<QuorumPeer, StateEnum> fieldUpdater
+        = AtomicReferenceFieldUpdater.newUpdater(QuorumPeer.class, StateEnum.class, "stateEnum");
 
     @Getter
     @Setter
-    private volatile StateEnum stateEnum = StateEnum.FOLLOWER;
+    private volatile StateEnum stateEnum = FOLLOWER;
     /**
      * 当前地址
      */
-    private final InetSocketAddress inetSocketAddress;
-    /**
-     * 服务连接
-     */
-    private final ServerCnxn cnxn;
+    @Getter
+    @Setter
+    private InetSocketAddress inetSocketAddress;
+
     /**
      * 下一个log entry的索引
      */
     private AtomicInteger nextIndex;
-    /**
-     * jishiqi
-     */
-    private Timer timer;
+
     /**
      * 已经提交的最新的日志记录
      */
@@ -67,39 +61,65 @@ public class QuorumPeer extends PeerThread{
     /**
      * 任期
      */
-    private int term = 0;
+    protected int term = 0;
 
     private long lastConnect;
 
-    Processor processor;
+    Leader leader;
+    Follower follower;
+    Candidate candidate;
 
+    AtomicInteger lastRequestId = new AtomicInteger();
+
+
+
+
+    /**
+     *
+     */
+
+    private Map<Integer,Packet> pendingRequest = new ConcurrentHashMap<>();
+
+    @Getter
+    @Setter
     private Integer leaderPid;
 
-    private Integer myid;
+    @Getter
+    @Setter
+    protected Integer myid;
     /**
      * 抽象的数据池
      */
     private ArrayList<Packet> data = new ArrayList<>(100);
 
-    /**
-     * hashMap
-     */
-    private HashMap<String,String> hashedMap = new HashMap<>();
+
+
+    private Quorums quorums;
+
+    private Config config;
+
+    public QuorumPeer() {
+
+    }
 
     /**
      * 两个计时器：
      * 维持leadership，每次心跳重新计时。
      * 等待自己从follower变成candidate，超时之后变化状态
-     *
      */
-    public QuorumPeer(InetSocketAddress inetSocketAddress, ServerCnxn cnxn) {
-        this.inetSocketAddress = inetSocketAddress;
-        this.cnxn = cnxn;
+    public QuorumPeer(Config config) {
+        this.inetSocketAddress = config.getLocalAddr();
+        this.quorums = new Quorums();
         this.lastConnect = System.currentTimeMillis();
         this.isAlive = new AtomicBoolean(true);
-        this.timer = Timer.electionTimer("follower超时",3, TimeUnit.SECONDS, this::startElection);
-
+        this.follower = new Follower();
+        this.follower.setSelf(this);
+        for(Config other:config.getOthers()){
+           QuorumPeer peer= QuorumPeer.parseFromConfig(other.getSid(),other.getLocalAddr());
+           quorums.addPeer(peer);
+        }
     }
+
 
     /**
      * peer 存在两种状态：
@@ -107,48 +127,72 @@ public class QuorumPeer extends PeerThread{
      * candidate
      * 接受来自leader的logEntry
      */
-    public Packet acceptLogEntry(Packet packet){
+    public Packet acceptLogEntry(Packet packet) {
         return null;
     }
 
-    public void refresh(){
-        if(isAlive.get()){
-            lastConnect = System.currentTimeMillis();
-            timer.refresh();
-        }else {
-            log.info("this already dead");
-        }
-
-    }
-
-    public Packet pong(Packet packet){
+    public Packet pong(Packet packet) {
         return null;
-    }
-
-    public boolean supportElect(Votes votes){
-        if(StateEnum.LEADER.equals(getStateEnum()) || !isAlive.get() || supportive.get()){
-            return false;
-        }else {
-            return true;
-        }
     }
 
     @Override
     public synchronized void start() {
-        this.timer.start();
-
-
-        super.start();
+        //todo connect to all peers
+        //maybe socket
     }
 
-    public void startElection(){
-        log.info("peer:{}开始选举",myid);
-        if (!fieldUpdater.compareAndSet(this,StateEnum.FOLLOWER,StateEnum.CANDIDATE)){
-            log.warn("当前peer状态 not follower");
-            return;
+    @Override
+    public void run() {
+        while (isAlive.get()) {
+            StateEnum state = this.getStateEnum();
+            switch (state) {
+                case FOLLOWER:
+                    try{
+                        this.follower = new Follower();
+                    }catch (Exception e){
+                        this.setStateEnum(FOLLOWER);
+                    }
+
+                case CANDIDATE:
+                case LEADER:
+                default:
+                    break;
+            }
         }
-        this.supportive.set(false);
     }
 
-    // public Packet
+    public void addPendingRequest(Integer requestId,Packet packet){
+        this.pendingRequest.put(requestId,packet);
+    }
+
+
+    public void changeToLead(){
+        if(!this.getStateEnum().equals(CANDIDATE)){
+            log.warn("无法从非candidate状态转变成leader");
+        }else if(this.getStateEnum().equals(LEADER)){
+            log.warn("已经是leader");
+        }
+        this.setStateEnum(LEADER);
+    }
+
+    public void changeToFollower(){
+        if(this.getStateEnum().equals(FOLLOWER)){
+            log.warn("已经是 follower");
+        }
+        this.setStateEnum(FOLLOWER);
+    }
+
+    public void lead(){
+        Leader leader = new Leader();
+        leader.setSid(myid);
+        this.leader = leader;
+    }
+
+    public static QuorumPeer parseFromConfig(int sid,InetSocketAddress inetSocketAddress){
+        QuorumPeer quorumPeer = new QuorumPeer();
+        quorumPeer.setMyid(sid);
+        quorumPeer.setInetSocketAddress(inetSocketAddress);
+        return quorumPeer;
+    }
+
 }

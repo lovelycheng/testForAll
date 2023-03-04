@@ -4,6 +4,7 @@ package com.example.tests.raft.server.quorum;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -29,11 +30,17 @@ public class QuorumPeerManager {
 
     private final RaftServer server;
 
+    private QuorumPeer self;
+
     private ConcurrentSet<QuorumPeer> quorumPeers = new ConcurrentSet<>();
 
     public QuorumPeerManager(RaftServer server) {
         this.server = server;
     }
+
+    public LinkedBlockingQueue<Packet> recvQueue = new LinkedBlockingQueue<>();
+
+
 
 
 }
